@@ -23,11 +23,36 @@ public class VerifyClassDto<T> {
                 throw new IllegalArgumentException("Field '" + field.getName() + "' cannot be empty.");
             }
 
-            if (!field.getType().isAssignableFrom(value.getClass())) {
-                throw new IllegalArgumentException("Field '" + field.getName() + "' has incorrect type. Expected: " 
-                                                    + field.getType().getSimpleName() + ", but got: " 
-                                                    + value.getClass().getSimpleName());
+            // Verifica o tipo correto
+            if (field.getType().isPrimitive()) {
+                // Se o campo é primitivo, verificamos o tipo de objeto correspondente
+                Class<?> wrapperClass = getWrapperClass(field.getType());
+                if (!wrapperClass.isInstance(value)) {
+                    throw new IllegalArgumentException("Field '" + field.getName() + "' has incorrect type. Expected: " 
+                                                        + field.getType().getSimpleName() + ", but got: " 
+                                                        + value.getClass().getSimpleName());
+                }
+            } else {
+                // Se não é primitivo, usamos a verificação padrão
+                if (!field.getType().isAssignableFrom(value.getClass())) {
+                    throw new IllegalArgumentException("Field '" + field.getName() + "' has incorrect type. Expected: " 
+                                                        + field.getType().getSimpleName() + ", but got: " 
+                                                        + value.getClass().getSimpleName());
+                }
             }
         }
     }
+
+    private static Class<?> getWrapperClass(Class<?> primitiveClass) {
+        if (primitiveClass == int.class) return Integer.class;
+        if (primitiveClass == long.class) return Long.class;
+        if (primitiveClass == double.class) return Double.class;
+        if (primitiveClass == float.class) return Float.class;
+        if (primitiveClass == boolean.class) return Boolean.class;
+        if (primitiveClass == char.class) return Character.class;
+        if (primitiveClass == byte.class) return Byte.class;
+        if (primitiveClass == short.class) return Short.class;
+        throw new IllegalArgumentException("Unsupported primitive type: " + primitiveClass);
+    }
 }
+

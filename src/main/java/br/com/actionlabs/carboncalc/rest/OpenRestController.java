@@ -2,7 +2,10 @@ package br.com.actionlabs.carboncalc.rest;
 
 import br.com.actionlabs.carboncalc.dto.*;
 import br.com.actionlabs.carboncalc.exception.ErrorResponse; // Importa a classe ErrorResponse
-import br.com.actionlabs.carboncalc.service.StartCalcService;
+import br.com.actionlabs.carboncalc.service.CalculationInfoService;
+import br.com.actionlabs.carboncalc.service.GetMyCalculationsService;
+import br.com.actionlabs.carboncalc.service.StartCalculationService;
+import br.com.actionlabs.carboncalc.utils.Validator;
 import br.com.actionlabs.carboncalc.utils.VerifyClassDto;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +21,14 @@ import java.util.Collections;
 public class OpenRestController {
   
     @Autowired
-    private StartCalcService startCalcService;
+    private StartCalculationService startCalcService;
+
+    @Autowired
+    private CalculationInfoService calcInfoService;
+
+    @Autowired
+    private GetMyCalculationsService getMyCalculationsService;
+  
 
     @PostMapping("start-calc")
     public ResponseEntity<?> startCalculation(
@@ -26,9 +36,12 @@ public class OpenRestController {
         
         try {
             VerifyClassDto.verify(request, null);
-            StartCalcResponseDTO response = startCalcService.startCalculation(request);
-            return ResponseEntity.ok(response); 
+            Validator.validateUF(request.getUf());
+            Validator.validatePhoneNumber(request.getPhoneNumber());
+            Validator.validateEmail(request.getEmail());
 
+            StartCalcResponseDTO response = startCalcService.startCalculation(request);
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             log.error("Validation failed: {}", e.getMessage());
             return ResponseEntity.badRequest().body(new ErrorResponse("Validation failed", Collections.singletonList(e.getMessage())));
@@ -46,6 +59,10 @@ public class OpenRestController {
 
         try {
             VerifyClassDto.verify(request, null);
+            Validator.validateRecyclePercentage(request.getRecyclePercentage());
+
+            UpdateCalcInfoResponseDTO response = calcInfoService.updateCalcInfo(request);
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             log.error("Validation failed: {}", e.getMessage());
             return ResponseEntity.badRequest().body(new ErrorResponse("Validation failed", Collections.singletonList(e.getMessage())));
@@ -53,12 +70,21 @@ public class OpenRestController {
             log.error("An error occurred: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(new ErrorResponse("An error occurred", Collections.singletonList(e.getMessage())));
         }
-
-        throw new RuntimeException("Not implemented");
     }
 
     @GetMapping("result/{id}")
     public ResponseEntity<CarbonCalculationResultDTO> getResult(@PathVariable String id) {
         throw new RuntimeException("Not implemented");
+    }
+
+    @GetMapping("my-calcs/{email}")
+    public ResponseEntity<?> getMyCalcs(@PathVariable String email) {
+        try{
+            GetMyCalculationsResultDTO result = getMyCalculationsService.getMyCalculations(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("An error occurred: {}", e.getMessage());
+            return ResponseEntity.internalServerError().body(new ErrorResponse("An error occurred", Collections.singletonList(e.getMessage())));
+        }
     }
 }
