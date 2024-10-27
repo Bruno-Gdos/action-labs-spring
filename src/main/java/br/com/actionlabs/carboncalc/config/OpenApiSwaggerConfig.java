@@ -3,11 +3,9 @@ package br.com.actionlabs.carboncalc.config;
 import io.swagger.v3.oas.models.Paths;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import java.util.Comparator;
 import java.util.TreeMap;
@@ -17,8 +15,6 @@ import java.util.TreeMap;
 public class OpenApiSwaggerConfig {
   @Value("${server.version}")
   private String version;
-  @Autowired
-  private Environment env;
 
   @Bean
   public GroupedOpenApi publicApi() {
