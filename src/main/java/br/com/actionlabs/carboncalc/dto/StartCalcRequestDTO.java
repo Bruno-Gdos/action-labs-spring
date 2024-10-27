@@ -7,5 +7,5 @@ public class StartCalcRequestDTO {
   private String name;
   private String email;
   private String uf;
-  private Integer phoneNumber;
+  private String phoneNumber;
 }
