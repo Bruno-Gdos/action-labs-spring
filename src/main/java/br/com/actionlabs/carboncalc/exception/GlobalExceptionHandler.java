@@ -31,13 +31,11 @@ public class GlobalExceptionHandler {
             }
         }
 
-        // Build and return the response
         ErrorResponse errorResponse = new ErrorResponse(userFriendlyMessage, errorDetails);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     private String extractExpectedType(String errorMessage) {
-        // This method extracts the expected type from the error message
         if (errorMessage.contains("Cannot deserialize value of type")) {
             String[] parts = errorMessage.split("from");
             if (parts.length > 0) {

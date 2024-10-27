@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SolidWasteEmissionFactorRepository
-    extends MongoRepository<SolidWasteEmissionFactor, String> {}
+    extends MongoRepository<SolidWasteEmissionFactor, String> {
+    SolidWasteEmissionFactor findByUf(String uf);
+    }

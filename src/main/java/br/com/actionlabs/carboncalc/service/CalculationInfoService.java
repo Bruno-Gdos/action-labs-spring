@@ -1,11 +1,9 @@
 package br.com.actionlabs.carboncalc.service;
 
-import br.com.actionlabs.carboncalc.dto.UpdateCalcInfoRequestDTO;
 import br.com.actionlabs.carboncalc.dto.UpdateCalcInfoResponseDTO;
+import br.com.actionlabs.carboncalc.dto.UpdateCalculationInfoRequestDTO;
 import br.com.actionlabs.carboncalc.model.CalculationInfo;
 import br.com.actionlabs.carboncalc.repository.CalculationInfoRepository;
-import br.com.actionlabs.carboncalc.utils.Validator;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,21 +11,16 @@ import org.springframework.stereotype.Service;
 public class CalculationInfoService {
 
     @Autowired
-    private CalculationInfoRepository calcInfoRepository;
+    private CalculationInfoRepository calculationInfoRepository;
 
-    public UpdateCalcInfoResponseDTO updateCalcInfo(UpdateCalcInfoRequestDTO requestDTO) throws IllegalArgumentException {
-        
-        Validator.validateRecyclePercentage(requestDTO.getRecyclePercentage());
+    public UpdateCalcInfoResponseDTO updateCalcInfo(UpdateCalculationInfoRequestDTO requestDTO) throws IllegalArgumentException {
 
-        
-        CalculationInfo calcInfo = new CalculationInfo();
-        calcInfo.setCalculationId(requestDTO.getId());
-        calcInfo.setEnergyConsumption(requestDTO.getEnergyConsumption());
-        calcInfo.setTransportation(requestDTO.getTransportation());
-        calcInfo.setSolidWasteTotal(requestDTO.getSolidWasteTotal());
-        calcInfo.setRecyclePercentage(requestDTO.getRecyclePercentage());
-
-        calcInfoRepository.save(calcInfo);
+        CalculationInfo calculationInfo = calculationInfoRepository.findById(requestDTO.getId()).orElse(null);
+        if (calculationInfo == null) {
+            throw new IllegalArgumentException("Calculation not found");
+        }
+        CalculationInfo updatedCalculationInfo = new CalculationInfo(requestDTO.getId(), calculationInfo.getUserId(), requestDTO);
+        calculationInfoRepository.save(updatedCalculationInfo);
 
         UpdateCalcInfoResponseDTO responseDTO = new UpdateCalcInfoResponseDTO();
         responseDTO.setSuccess(true);

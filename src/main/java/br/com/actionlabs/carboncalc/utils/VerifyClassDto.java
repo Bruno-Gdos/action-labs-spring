@@ -22,10 +22,7 @@ public class VerifyClassDto<T> {
             if (value instanceof String && ((String) value).isEmpty()) {
                 throw new IllegalArgumentException("Field '" + field.getName() + "' cannot be empty.");
             }
-
-            // Verifica o tipo correto
             if (field.getType().isPrimitive()) {
-                // Se o campo é primitivo, verificamos o tipo de objeto correspondente
                 Class<?> wrapperClass = getWrapperClass(field.getType());
                 if (!wrapperClass.isInstance(value)) {
                     throw new IllegalArgumentException("Field '" + field.getName() + "' has incorrect type. Expected: " 
@@ -33,7 +30,6 @@ public class VerifyClassDto<T> {
                                                         + value.getClass().getSimpleName());
                 }
             } else {
-                // Se não é primitivo, usamos a verificação padrão
                 if (!field.getType().isAssignableFrom(value.getClass())) {
                     throw new IllegalArgumentException("Field '" + field.getName() + "' has incorrect type. Expected: " 
                                                         + field.getType().getSimpleName() + ", but got: " 
