@@ -3,6 +3,7 @@ package br.com.actionlabs.carboncalc.rest;
 import br.com.actionlabs.carboncalc.dto.*;
 import br.com.actionlabs.carboncalc.exception.ErrorResponse; // Importa a classe ErrorResponse
 import br.com.actionlabs.carboncalc.service.CalculationInfoService;
+import br.com.actionlabs.carboncalc.service.CalculationResultService;
 import br.com.actionlabs.carboncalc.service.GetMyCalculationsService;
 import br.com.actionlabs.carboncalc.service.StartCalculationService;
 import br.com.actionlabs.carboncalc.utils.Validator;
@@ -28,6 +29,9 @@ public class OpenRestController {
 
     @Autowired
     private GetMyCalculationsService getMyCalculationsService;
+
+    @Autowired
+    CalculationResultService calculationResultService;
   
 
     @PostMapping("start-calc")
@@ -55,7 +59,7 @@ public class OpenRestController {
 
     @PutMapping("info")
     public ResponseEntity<?> updateInfo(
-        @RequestBody UpdateCalcInfoRequestDTO request) {
+        @RequestBody UpdateCalculationInfoRequestDTO request) {
 
         try {
             VerifyClassDto.verify(request, null);
@@ -73,8 +77,14 @@ public class OpenRestController {
     }
 
     @GetMapping("result/{id}")
-    public ResponseEntity<CarbonCalculationResultDTO> getResult(@PathVariable String id) {
-        throw new RuntimeException("Not implemented");
+    public ResponseEntity<?> getResult(@PathVariable String id) {
+        try {
+            CarbonCalculationResultDTO result = calculationResultService.calculateCarbonEmission(id);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("An error occurred: {}", e.getMessage());
+            return ResponseEntity.internalServerError().body(new ErrorResponse("An error occurred", Collections.singletonList(e.getMessage())));
+        }
     }
 
     @GetMapping("my-calcs/{email}")

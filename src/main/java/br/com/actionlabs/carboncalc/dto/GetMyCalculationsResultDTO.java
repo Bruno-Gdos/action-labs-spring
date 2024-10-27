@@ -3,12 +3,12 @@ package br.com.actionlabs.carboncalc.dto;
 import lombok.Data;
 import java.util.List;
 
-import br.com.actionlabs.carboncalc.model.Calculation;
+import br.com.actionlabs.carboncalc.model.CalculationInfo;
 
 @Data
 public class GetMyCalculationsResultDTO {
 
     private String userEmail;
-    private List<Calculation> calculations;
+    private List<CalculationInfo> calculations;
     
 }
