@@ -33,12 +33,10 @@ public class CalculationInfoServiceTest {
     public void setUp() {
         requestDTO = new UpdateCalculationInfoRequestDTO();
         requestDTO.setId("TestId");
-        // Set other fields of requestDTO as needed
 
         calculationInfo = new CalculationInfo();
         calculationInfo.setId("TestId");
         calculationInfo.setUserId("TestId");
-        // Set other fields of calculationInfo as needed
     }
 
     @Test
