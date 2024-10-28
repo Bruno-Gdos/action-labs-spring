@@ -1,7 +1,7 @@
 package br.com.actionlabs.carboncalc.rest;
 
 import br.com.actionlabs.carboncalc.dto.*;
-import br.com.actionlabs.carboncalc.exception.ErrorResponse; // Importa a classe ErrorResponse
+import br.com.actionlabs.carboncalc.exception.ErrorResponse; 
 import br.com.actionlabs.carboncalc.service.CalculationInfoService;
 import br.com.actionlabs.carboncalc.service.CalculationResultService;
 import br.com.actionlabs.carboncalc.service.GetMyCalculationsService;

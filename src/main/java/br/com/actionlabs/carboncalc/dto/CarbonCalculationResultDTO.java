@@ -10,6 +10,4 @@ public class CarbonCalculationResultDTO {
   private double transportation;
   private double solidWaste;
   private double total;
-
-
 }
